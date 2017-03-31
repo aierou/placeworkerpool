@@ -28,32 +28,16 @@ app.all('/*', function(req, res, next) {
   next();
 });
 
+app.use(express.static('public'));
+
 app.get('/next.json', function (req, res) {
   res.status(200).json(board.getNextTile());
+});
+
+app.get('/', function (req, res) {
+  res.send("github.com/aierou/placeworkerpool -- get the userscript at /client.js");
 });
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
-
-// var lex = require('greenlock-express').create({
-//   // set to https://acme-v01.api.letsencrypt.org/directory in production
-//   // "staging" otherwise
-//   server: "https://acme-v01.api.letsencrypt.org/directory",
-//   approveDomains: config.ssl.domains,
-//   agreeTos: true,
-//   email: config.ssl.email,
-//   debug: true
-// });
-//
-// http.createServer(lex.middleware(require('redirect-https')())).listen(80, function () {
-//   console.log("Listening for ACME http-01 challenges");
-// });
-//
-// var start = function(){
-//   https.createServer(lex.httpsOptions, lex.middleware(app)).listen(443, function () {
-//     console.log("Listening for connections");
-//   });
-// }
-//
-// start();
