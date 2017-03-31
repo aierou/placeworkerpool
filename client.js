@@ -1,6 +1,6 @@
 //Client script to be added to a user's browser
 
-var url = "https://192.168.0.4" //For testing right now
+var url = "https://bluearmypool.herokuapp.com/" //For testing right now
 var delay = 1000*60*5;
 var modhash = "";
 
