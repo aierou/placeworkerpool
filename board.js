@@ -11,15 +11,16 @@ var work;
 //Taken from page source. Don't know exactly what conversions are happening here yet.
 var r, state = new Uint8Array(config.place_canvas_width * config.place_canvas_height), s = 0;
 function buildState(e) {
+  s=0;//s += e.byteLength * 2
+  r = null;
+  state = new Uint8Array(config.place_canvas_width * config.place_canvas_height)
   r || (r = (new Uint32Array(e.buffer,0,1))[0], e = new Uint8Array(e.buffer,4));
   for (var t = 0; t < e.byteLength; t++){
     state[s + 2 * t] = e[t] >> 4;
     state[s + 2 * t + 1] = e[t] & 15;
   }
-  s=0;//s += e.byteLength * 2
   getWork();
 }
-
 function getWork(){
   work = [];
   for(var i = 0; i < state.length; i++){
