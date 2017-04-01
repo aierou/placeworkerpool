@@ -15,12 +15,17 @@ function buildState(e) {
   getWork();
 }
 
+var goal;
+this.setImage = function(image){
+  goal = image;
+}
+
 var work;
 //TODO: adapt this for configurable jobs based on specified image
 function getWork(){
   work = [];
   for(var i = 0; i < state.length; i++){
-    if(state[i] != 13) work.push(i); //Blue army
+    if(goal[i] != 100 && state[i] != goal[i]) work.push(i); //Blue army
   }
   console.log("Jobs: " + work.length);
 }
@@ -31,7 +36,26 @@ function indexToPos(index){
   return {x:x, y:y};
 }
 
+this.posToIndex = function(x, y){
+  var index = y * config.place_canvas_width;
+  index += x;
+  return index;
+}
+
 this.palette = ["#FFFFFF", "#E4E4E4", "#888888", "#222222", "#FFA7D1", "#E50000", "#E59500", "#A06A42", "#E5D900", "#94E044", "#02BE01", "#00D3DD", "#0083C7", "#0000EA", "#CF6EE4", "#820080"];
+
+this.getRGBPalette = function(){
+  var ret = [];
+  for(var i = 0; i < this.palette.length; i++){
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(this.palette[i]);
+    ret.push(result ? {
+        R: parseInt(result[1], 16),
+        G: parseInt(result[2], 16),
+        B: parseInt(result[3], 16)
+    } : null);
+  }
+  return ret;
+}
 
 this.update = function(){
   request({
@@ -44,11 +68,13 @@ this.update = function(){
       console.log("Board updated");
     }
   });
+  setTimeout(this.update, config.update_delay);
 }
 
 this.getNextTile = function(){
-  var color = 13;
-  var pos = indexToPos(work.pop());
+  var index = work.pop();
+  var color = goal[index];
+  var pos = indexToPos(index);
   return {color: color, x: pos.x, y: pos.y};
 }
 
