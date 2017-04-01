@@ -20,9 +20,9 @@ var app = express();
 app.set('port', (process.env.PORT || 443));
 
 //Get desired pixel map
-function convertImage(){
+function convertImage(source){
   var palette = board.getRGBPalette();
-  Jimp.read("in.png", function (err, image) {
+  Jimp.read(source, function (err, image) {
     var out = new Uint8Array(config.place_canvas_width * config.place_canvas_height).fill(100);
     var width = Math.min(image.bitmap.width, config.place_canvas_width);
     var height = Math.min(image.bitmap.height, config.place_canvas_height);
@@ -39,23 +39,24 @@ function convertImage(){
       }else{
         var color = {R:red, G:green, B:blue};
         closest = diff.closest(color, palette);
-        for(var i = 0; i < palette.length; i++){
-          //Costly bad comparison
-          if(JSON.stringify(closest) === JSON.stringify(palette[i])){
-            approx = i;
-            break;
-          }
-        }
+        approx = closest.id;
       }
       var index = board.posToIndex(x,y);
 
       out[index] = approx;
     });
     board.setImage(out);
-    board.update();
+    updateBoard();
   });
 }
-convertImage();
+convertImage("in.png");
+
+var boardUpdateTimer;
+function updateBoard(){
+  board.update();
+  clearInterval(boardUpdateTimer);
+  boardUpdateTimer = setInterval(board.update, config.update_delay);
+}
 
 //Allow CORS requests
 app.all('/*', function(req, res, next) {
@@ -65,6 +66,7 @@ app.all('/*', function(req, res, next) {
 });
 
 app.use(express.static('public'));
+app.use(bodyParser.json({limit: '10mb'}));
 
 app.get('/next.json', function (req, res) {
   //Dead simple rate limiting. Cleared every board update
@@ -85,6 +87,13 @@ app.get('/stats.json', function(req, res){
 
 app.get('/', function (req, res) {
   res.send("github.com/aierou/placeworkerpool -- get the userscript at /client.js");
+});
+
+app.post('/goal', function(req, res){
+  if(req.body.key+"" != process.env.SECRET+"") return res.status(403).send();
+  if(!req.body.image) return res.status(400).json({message:"No image"});
+  convertImage(new Buffer(req.body.image, "base64"));
+  res.status(200).send();
 });
 
 app.listen(app.get('port'), function() {

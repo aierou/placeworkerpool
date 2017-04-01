@@ -6,6 +6,7 @@ var config = require("./config.js");
 this.palette = ["#FFFFFF", "#E4E4E4", "#888888", "#222222", "#FFA7D1", "#E50000", "#E59500", "#A06A42", "#E5D900", "#94E044", "#02BE01", "#00D3DD", "#0083C7", "#0000EA", "#CF6EE4", "#820080"];
 this.users = {};
 var goal_image;
+var work;
 
 //Taken from page source. Don't know exactly what conversions are happening here yet.
 var r, state = new Uint8Array(config.place_canvas_width * config.place_canvas_height), s = 0;
@@ -19,7 +20,6 @@ function buildState(e) {
   getWork();
 }
 
-var work;
 function getWork(){
   work = [];
   for(var i = 0; i < state.length; i++){
@@ -51,7 +51,8 @@ this.getRGBPalette = function(){
     ret.push(result ? {
         R: parseInt(result[1], 16),
         G: parseInt(result[2], 16),
-        B: parseInt(result[3], 16)
+        B: parseInt(result[3], 16),
+        id: i
     } : null);
   }
   return ret;
@@ -74,7 +75,7 @@ this.update = function(){
     }
   });
 }
-setInterval(this.update, config.update_delay);
+
 this.getStats = function(){
   return {current: thisRound, last: lastRound};
 }
