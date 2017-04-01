@@ -68,8 +68,8 @@ this.update = function(){
       console.log("Board updated");
     }
   });
-  setTimeout(this.update, config.update_delay);
 }
+setInterval(this.update, config.update_delay);
 
 this.getNextTile = function(){
   var index = work.pop();
