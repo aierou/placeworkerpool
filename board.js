@@ -57,7 +57,11 @@ this.getRGBPalette = function(){
   return ret;
 }
 
+var thisRound = 0;
+var lastRound = 0;
 this.update = function(){
+  lastRound = thisRound;
+  thisRound = 0;
   request({
     followAllRedirects: true,
     url: "https://reddit.com/api/place/board-bitmap",
@@ -70,8 +74,11 @@ this.update = function(){
   });
 }
 setInterval(this.update, config.update_delay);
-
+this.getStats = function(){
+  return {current: thisRound, last: lastRound};
+}
 this.getNextTile = function(){
+  thisRound++;
   var index = work.pop();
   var color = goal[index];
   var pos = indexToPos(index);

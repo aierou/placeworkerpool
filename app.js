@@ -70,6 +70,10 @@ app.get('/next.json', function (req, res) {
   res.status(200).json(board.getNextTile());
 });
 
+app.get('/stats.json', function(req, res){
+  res.status(200).json(board.getStats());
+});
+
 app.get('/', function (req, res) {
   res.send("github.com/aierou/placeworkerpool -- get the userscript at /client.js");
 });
