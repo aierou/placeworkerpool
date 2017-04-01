@@ -3,6 +3,10 @@ var http = require('http'),
 
 var config = require("./config.js");
 
+this.palette = ["#FFFFFF", "#E4E4E4", "#888888", "#222222", "#FFA7D1", "#E50000", "#E59500", "#A06A42", "#E5D900", "#94E044", "#02BE01", "#00D3DD", "#0083C7", "#0000EA", "#CF6EE4", "#820080"];
+this.users = {};
+var goal_image;
+
 //Taken from page source. Don't know exactly what conversions are happening here yet.
 var r, state = new Uint8Array(config.place_canvas_width * config.place_canvas_height), s = 0;
 function buildState(e) {
@@ -15,22 +19,20 @@ function buildState(e) {
   getWork();
 }
 
-var goal;
-this.setImage = function(image){
-  goal = image;
-}
-
 var work;
-//TODO: adapt this for configurable jobs based on specified image
 function getWork(){
   work = [];
   for(var i = 0; i < state.length; i++){
-    if(goal[i] != 100 && state[i] != goal[i]) work.push(i); //Blue army
+    if(goal_image[i] != 100 && state[i] != goal_image[i]) work.push(i); //Blue army
   }
   console.log("Jobs: " + work.length);
 }
 
-function indexToPos(index){
+this.setImage = function(image){
+  goal_image = image;
+}
+
+this.indexToPos = function(index){
   var x = index % config.place_canvas_width;
   var y = Math.floor(index / config.place_canvas_width);
   return {x:x, y:y};
@@ -41,8 +43,6 @@ this.posToIndex = function(x, y){
   index += x;
   return index;
 }
-
-this.palette = ["#FFFFFF", "#E4E4E4", "#888888", "#222222", "#FFA7D1", "#E50000", "#E59500", "#A06A42", "#E5D900", "#94E044", "#02BE01", "#00D3DD", "#0083C7", "#0000EA", "#CF6EE4", "#820080"];
 
 this.getRGBPalette = function(){
   var ret = [];
@@ -60,6 +60,7 @@ this.getRGBPalette = function(){
 var thisRound = 0;
 var lastRound = 0;
 this.update = function(){
+  this.users = {};
   lastRound = thisRound;
   thisRound = 0;
   request({
@@ -80,8 +81,8 @@ this.getStats = function(){
 this.getNextTile = function(){
   thisRound++;
   var index = work.pop();
-  var color = goal[index];
-  var pos = indexToPos(index);
+  var color = goal_image[index];
+  var pos = this.indexToPos(index);
   return {color: color, x: pos.x, y: pos.y};
 }
 

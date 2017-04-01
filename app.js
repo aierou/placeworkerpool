@@ -67,6 +67,15 @@ app.all('/*', function(req, res, next) {
 app.use(express.static('public'));
 
 app.get('/next.json', function (req, res) {
+  //Dead simple rate limiting. Cleared every board update
+  if(!board.users[req.ip]){
+    board.users[req.ip] = 1;
+  }else{
+    if(board.users[req.ip] > 5){
+      return res.status(403).send();
+    }
+    board.users[req.ip]++;
+  }
   res.status(200).json(board.getNextTile());
 });
 
