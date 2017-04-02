@@ -61,8 +61,9 @@ this.getRGBPalette = function(){
 
 var thisRound = 0;
 var lastRound = 0;
+var board = this;
 this.update = function(){
-  this.users = {};
+  board.users = {};
   lastRound = thisRound;
   thisRound = 0;
   request({

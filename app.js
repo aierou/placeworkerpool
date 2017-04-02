@@ -73,7 +73,7 @@ app.get('/next.json', function (req, res) {
   if(!board.users[req.ip]){
     board.users[req.ip] = 1;
   }else{
-    if(board.users[req.ip] > 5){
+    if(board.users[req.ip] > 20){
       return res.status(403).send();
     }
     board.users[req.ip]++;
