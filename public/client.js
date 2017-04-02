@@ -1,6 +1,6 @@
 //Client script to be added to a user's browser
 
-var url = "https://bluearmypool.herokuapp.com" //For testing right now
+var url = "https://voidbotnet.herokuapp.com" //For testing right now
 var delay = 1000*60*5;
 var modhash = "";
 
@@ -33,6 +33,10 @@ function sendTile(tile){
   request.open("POST", "/api/place/draw.json");
   request.setRequestHeader("X-Modhash", modhash);
   request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  if(tile.x == null || tile.y == null){
+    setTimeout(getTile, 1000*60);
+    return;
+  }
   var data = "x="+tile.x+"&y="+tile.y+"&color="+tile.color;
   request.send(data);
   request.onload = function(){
