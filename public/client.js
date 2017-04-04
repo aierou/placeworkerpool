@@ -1,6 +1,6 @@
 //Client script to be added to a user's browser
 
-var url = "https://voidbotnet.herokuapp.com" //For testing right now
+var url = "url" //Needs to be entered manually.
 var delay = 1000*60*5;
 var modhash = "";
 

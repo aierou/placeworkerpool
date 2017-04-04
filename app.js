@@ -1,10 +1,3 @@
-//Server for a reddit.com/r/place botnet. The goal of this application is to distribute
-//work across a number of users in order to more effectively preserve /r/place images
-//In the future the plan is to allow the goal to be customized, or perhaps even service
-//multiple /r/place initiatives with some sort of web interface and customization options
-//Currently, in order to connect to the botnet and get work, users must add the userscript
-//"client.js" To their browser.
-
 var express = require('express'),
     bodyParser = require("body-parser"),
     https = require("https"),
